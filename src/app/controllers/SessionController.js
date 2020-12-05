@@ -31,7 +31,7 @@ class SessionController {
             });
           
       } else {
-          return res.status(401).json({ error: 'Invalid Password'});
+          return res.status(401).json({ error: 'Indalid Password'});
       }
 
   }
