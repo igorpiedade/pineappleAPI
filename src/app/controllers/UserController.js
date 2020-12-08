@@ -4,26 +4,71 @@ import User from '../schemas/user';
 
 class UserController {
     async store(req, res){
-      
-      const userData = req.body;
 
-      const password_hash = bcrypt.hashSync(userData.password,6);
+      const { userName, firstName, lastName, email, password } = req.body;
+
+      const userExists = await User.findOne({ userName });
+      if(userExists) {
+          return res.status(400).json({ error: 'User already exists.' });
+        }
+     
+      const emailExists = await User.findOne({ email });
+      if(emailExists) {
+          return res.status(400).json({ error: 'E-mail already registred.' });
+        }
+
+      const password_hash = bcrypt.hashSync(password,6);
       
       await User.create({
-          userName: userData.userName,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          email: userData.email,
+          userName,
+          firstName,
+          lastName,
+          email,
           password_hash: password_hash,
       });
-
-      return res.json(User);
+      return res.json({
+          userName,
+          firstName,
+          lastName,
+          email,
+      });
 
     }
 
     async update(req, res){
-        console.log( req.userId);
-        return res.json({ ok: true });
+        
+        const user = await User.findById(req.userId);
+        const { userName, firstName, lastName, email, password, newPassword } = req.body;
+
+        if ( email !== user.email ){
+           
+          const emailExists = await User.findOne({ email });
+
+           if(emailExists) {
+              return res.status(400).json({ error: 'E-mail already registred.' });
+            }  
+        }
+
+        if (newPassword && !(await bcrypt.compare(password, user.password_hash) ) ) {
+              return res.status(400).json({ error: 'Password does not match' });
+        }
+
+        const password_hash = bcrypt.hashSync(newPassword,6); 
+
+        await user.updateOne({
+          userName,
+          firstName,
+          lastName,
+          email,
+          password_hash: password_hash,
+      });
+
+        return res.json({
+            userName,
+            firstName,
+            lastName,
+            email,
+        });
     }
 
 }
