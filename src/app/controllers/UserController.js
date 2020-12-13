@@ -61,7 +61,7 @@ class UserController {
           lastName,
           email,
           password_hash: password_hash,
-      });
+        });
 
         return res.json({
             userName,
@@ -69,6 +69,24 @@ class UserController {
             lastName,
             email,
         });
+    }
+
+    async delete(req, res){
+      const { userName, password } = req.body;
+
+      const user = await User.findById(req.userId);
+
+      if ( user.userName !== userName) {
+            return res.status(400).json({ error: 'User does note match'})
+      }
+
+      if (!(await bcrypt.compare(password, user.password_hash))){
+            return res.status(400).json({ error: 'Password does note match'})
+      }
+
+      const deleteUser = await User.findByIdAndDelete(req.userId);
+
+      return res.json( `User deleted` );
     }
 
 }

@@ -9,6 +9,7 @@ const routes = new Router();
 
 routes.post('/users', UserController.store);
 routes.put('/users', authMiddleware, UserController.update);
+routes.delete('/users', authMiddleware, UserController.delete), 
 
 routes.post('/sessions', SessionController.store);
 
