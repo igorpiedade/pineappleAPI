@@ -81,7 +81,7 @@ class UserController {
       }
 
       if (!(await bcrypt.compare(password, user.password_hash))){
-            return res.status(400).json({ error: 'Password does note match'})
+            return res.status(401).json({ error: 'Password does note match'})
       }
 
       const deleteUser = await User.findByIdAndDelete(req.userId);
