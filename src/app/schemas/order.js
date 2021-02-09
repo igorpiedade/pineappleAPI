@@ -36,12 +36,6 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
 
-  amount: {
-    type: Number,
-    required: true,
-
-  },
-
 } , {
   timestamps: true,
 });

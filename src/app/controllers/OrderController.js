@@ -1,6 +1,13 @@
 import Order from '../schemas/order';
 
 class OrderController {
+     async index(req,res){
+        const userId = req.userId;
+        const orders = await Order.find({ userId });
+
+        return res.json(orders)
+    }
+
      async store(req, res) {
 
       const userId = req.userId
@@ -16,7 +23,6 @@ class OrderController {
           quantity,
           price,
           currency,
-          amount: totalAmount,
 
       });
 
@@ -34,6 +40,7 @@ class OrderController {
      async update(req, res){
 
         const order = await Order.findById(req.body.orderId);
+        const { wallet, stock, orderType, quantity, price, currency } = req.body;
         const userId = req.userId
         
         if(!order) {
@@ -44,7 +51,24 @@ class OrderController {
             return res.status(401).json({ error: 'User not Allowed to change this order'})
         }
         
-        return res.json({ message: 'OK' })
+        
+        await order.updateOne({
+            wallet,
+            stock,
+            orderType,
+            quantity,
+            price,
+            currency,
+        }) 
+        
+        return res.json({
+            wallet,
+            stock,
+            orderType,
+            quantity,
+            price,
+            currency,
+        });
     }
 }
 

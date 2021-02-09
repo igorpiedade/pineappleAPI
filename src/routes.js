@@ -16,6 +16,7 @@ routes.post('/sessions', SessionController.store);
 
 routes.post('/orders', authMiddleware, OrderController.store);
 routes.put('/orders', authMiddleware, OrderController.update);
+routes.get('/orders', authMiddleware, OrderController.index);
 
 
 
