@@ -77,16 +77,16 @@ class UserController {
       const user = await User.findById(req.userId);
 
       if ( user.userName !== userName) {
-            return res.status(400).json({ error: 'User does note match'})
+            return res.status(400).json({ error: 'User does note match.'})
       }
 
       if (!(await bcrypt.compare(password, user.password_hash))){
-            return res.status(401).json({ error: 'Password does note match'})
+            return res.status(401).json({ error: 'Password does note match.'})
       }
 
-      const deleteUser = await User.findByIdAndDelete(req.userId);
+      await User.findByIdAndDelete(req.userId);
 
-      return res.json( `User deleted` );
+      return res.json( `User deleted!` );
     }
 
 }

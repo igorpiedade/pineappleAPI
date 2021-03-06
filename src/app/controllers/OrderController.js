@@ -70,6 +70,22 @@ class OrderController {
             currency,
         });
     }
+    
+     async delete(req, res){
+        const order = await Order.findById(req.body.orderId);
+        const userId = req.userId
+        
+        if(!order) {
+            return res.status(400).json({ error:'Order does not exist'})
+        }
+
+        if (userId !== order.userId) {
+            return res.status(401).json({ error: 'User not Allowed to delete this order'})
+        }
+
+        order.deleteOne();
+        return res.json({ message: 'Oder deleted'});
+    }
 }
 
 export default new OrderController();
